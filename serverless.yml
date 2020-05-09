@@ -29,10 +29,15 @@ provider:
       - s3:PutObject
       - s3:GetObject
       - s3:DeleteObject
-      - s3:ListBucket
     Resource:
       - "#{ImagesBucket.Arn}/*"
       - "#{MetaBucket.Arn}/*"
+  - Effect: Allow
+    Action:
+      - s3:ListBucket
+    Resource:
+      - "#{ImagesBucket.Arn}"
+      - "#{MetaBucket.Arn}"
 
 plugins:
   - serverless-cf-vars
@@ -54,10 +59,8 @@ layers:
 
 package:
   include:
-    - 'build/js'
+    - 'build/js/**/*.js'
   exclude:
-    - '!build/js/*'
-    - '!build/js/backend/**'
     - 'node_modules/**'
     - 'ts/**'
     - '*'
@@ -74,6 +77,10 @@ functions:
     events:
       - http:
           path: "{proxy+}"
+          method: ANY
+          private: true
+      - http:
+          path: /
           method: ANY
           private: true
 
