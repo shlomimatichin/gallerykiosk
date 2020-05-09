@@ -1,0 +1,50 @@
+#!/usr/bin/env python3
+import os
+import re
+import sys
+import subprocess
+import tempfile
+import textwrap
+
+TOP = os.path.abspath(os.path.dirname(__file__))
+STAGE = os.environ.get('STAGE', 'dev')
+
+
+def previous_PS1():
+    return subprocess.check_output(["bash", "-i", "-c", "echo '$PS1'"]).decode().strip()
+
+
+platform = 'mac' if b'Darwin' in subprocess.check_output(['uname', '-s']) else 'ubuntu'
+if 'NO_AWS_PROFILE' not in os.environ:
+    has_kugacode_profile = False
+    credentials = os.path.join(os.environ['HOME'], ".aws", "credentials")
+    if os.path.exists(credentials):
+        with open(credentials) as reader:
+            has_kugacode_profile = has_kugacode_profile or re.search(r"\bkugacode\]", reader.read()) is not None
+    if has_kugacode_profile:
+        os.environ['AWS_PROFILE'] = 'kugacode'
+os.environ['TOP'] = TOP
+os.environ['STAGE'] = STAGE
+os.environ['PYTHONPATH'] = os.path.join(TOP, 'py')
+os.environ['PATH'] = os.environ['PATH'] + ":" + os.path.join(TOP, "node_modules", ".bin")
+os.environ['PIPENV_VENV_IN_PROJECT'] = "1"
+os.environ['LC_ALL'] = 'en_US.UTF-8'
+os.environ['LANG'] = 'en_US.UTF-8'
+
+if len(sys.argv) > 1:
+    os.execlp(sys.argv[1], *sys.argv[1:])
+
+realm_ps1 = r'''\[\e[36m\]kugacode(%s)\[\e[m\]''' % STAGE
+temp = tempfile.NamedTemporaryFile(mode="w")
+temp.write(textwrap.dedent(r'''
+    source ~/%(bashrc)s
+    export PS1="%(previous_PS1)s%(realm_ps1)s\$ "
+    rm -fr %(temp_name)s
+''' % dict(
+    bashrc=".bash_profile" if platform == "mac" else ".bashrc",
+    previous_PS1=previous_PS1(),
+    realm_ps1=realm_ps1,
+    temp_name=temp.name,
+)))
+temp.flush()
+os.execlp("bash", "bash", "--rcfile", temp.name, "-i")

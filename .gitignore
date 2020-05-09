@@ -1,0 +1,7 @@
+attic
+*.sw?
+*.tmp
+.serverless
+node_modules
+build
+stackoutputs.yml

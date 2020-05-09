@@ -1,0 +1,125 @@
+service: gallerykiosk
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: ${env:STAGE}
+  region: eu-central-1
+  environment:
+    DYNAMODB_LOCK_TABLE: ${self:service}-lock-${env:STAGE}
+    IMAGES_BUCKET: ${self:service}-${env:STAGE}-images
+    META_BUCKET: ${self:service}-${env:STAGE}-meta
+    NODE_ENV: production
+  apiKeys:
+    - testapikey
+  iamRoleStatements:
+  - Effect: Allow
+    Action:
+      - dynamodb:GetItem
+      - dynamodb:UpdateItem
+      - dynamodb:PutItem
+      - dynamodb:Scan
+      - dynamodb:Query
+      - dynamodb:DeleteItem
+      - dynamodb:DescribeTable
+    Resource:
+      - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_LOCK_TABLE}"
+  - Effect: Allow
+    Action:
+      - s3:PutObject
+      - s3:GetObject
+      - s3:DeleteObject
+      - s3:ListBucket
+    Resource:
+      - "#{ImagesBucket.Arn}/*"
+      - "#{MetaBucket.Arn}/*"
+
+plugins:
+  - serverless-cf-vars
+  - serverless-plugin-log-retention
+
+custom:
+  logRetentionInDays: 180
+  stackName: ${self:service}-${env:STAGE}
+
+layers:
+  NodeModules:
+    path: .
+    package:
+      include:
+        - 'node_modules/**/*'
+      exclude:
+        - '**/test'
+        - '**/tests'
+
+package:
+  include:
+    - 'build/js'
+  exclude:
+    - '!build/js/*'
+    - '!build/js/backend/**'
+    - 'node_modules/**'
+    - 'ts/**'
+    - '*'
+    - '**/*.sw?'
+    - 'serverless-*/*'
+
+functions:
+  restapi:
+    timeout: 30
+    memorySize: 256
+    handler: build/js/backend/lambda_restapi.handler
+    layers:
+      - {Ref: NodeModulesLambdaLayer}
+    events:
+      - http:
+          path: "{proxy+}"
+          method: ANY
+          private: true
+
+resources:
+  Resources:
+    ImagesBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        AccessControl: Private
+        CorsConfiguration:
+          CorsRules:
+            - AllowedMethods:
+                - POST
+                - HEAD
+              AllowedOrigins:
+                - "*"
+              AllowedHeaders:
+                - "*"
+    MetaBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        AccessControl: Private
+        CorsConfiguration:
+          CorsRules:
+            - AllowedMethods:
+                - POST
+                - HEAD
+              AllowedOrigins:
+                - "*"
+              AllowedHeaders:
+                - "*"
+    LockTable:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: ID
+            AttributeType: S
+        KeySchema:
+          - AttributeName: ID
+            KeyType: HASH
+        TableName: ${self:provider.environment.DYNAMODB_LOCK_TABLE}
+        BillingMode: PAY_PER_REQUEST
+  Outputs:
+    ImagesBucket:
+      Value: !Ref ImagesBucket
+    MetaBucket:
+      Value: !Ref MetaBucket
+    LockTable:
+      Value: !Ref LockTable
