@@ -7,7 +7,7 @@ ajv.compile(Object.assign({"$id": "defs"}, require("../model/model.json")));
 const validate = (definition: string, candidate: any) => {
     const valid = ajv.validate("defs#/definitions/" + definition, candidate);
     if (!valid) {
-        throw new Error(`${ajv.errors}`);
+        throw new Error(JSON.stringify(ajv.errors));
     }
 };
 

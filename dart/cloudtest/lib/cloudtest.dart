@@ -2,6 +2,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:path/path.dart';
 import 'package:http/http.dart' as http;
 
 String serviceEndpoint = '';
@@ -21,10 +22,24 @@ Future<Map> apiClientGet(String relativePath) async {
   var url = serviceEndpoint + relativePath;
   var response = await http.get(url, headers: {'X-Api-Key': apiKey});
   if (response.statusCode != 200) {
-    throw Exception('Get ${url} failed: ${response.statusCode}');
+    throw Exception('Get ${relativePath} failed: ${response.statusCode}');
   }
   return json.decode(response.body);
 }
+
+Future<Map> apiClientPost(String relativePath, Map data) async {
+  assert(serviceEndpoint.isNotEmpty);
+  var url = serviceEndpoint + relativePath;
+  var response = await http.post(
+    url,
+    body: jsonEncode(data),
+    headers: {'X-Api-Key': apiKey, 'Content-Type': 'application/json'});
+  if (response.statusCode != 200) {
+    throw Exception('Post ${relativePath} failed: ${response.statusCode}');
+  }
+  return json.decode(response.body);
+}
+
 
 Future<String> getManifestUrl() async {
   var response = await apiClientGet('/api/v1/manifestUrl');
@@ -40,6 +55,20 @@ Future<Map> getManifest() async {
   return json.decode(response.body);
 }
 
+Future destroyAllData() async {
+  await apiClientPost('/fortesting/internal/destroyalldata', {});
+}
+
+Future uploadMediaFile(String path) async {
+  var pathBasename = basename(path);
+  var presignedPost = await apiClientPost('/api/v1/requestFileUpload', {'filename': pathBasename});
+  print(presignedPost);
+  assert(false);
+}
+
 Future test1() async {
-  print(await getManifest());
+  await destroyAllData();
+  var manifest = await getManifest();
+  assert(manifest['mediaFiles'].length == 0);
+  await uploadMediaFile('testdata/test.png');
 }

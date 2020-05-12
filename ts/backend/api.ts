@@ -31,11 +31,11 @@ apiRouter.get('/manifestUrl', async(_, res) => {
     });
 });
 
-apiRouter.post('/requestFileUpload', (req, res) => {
+apiRouter.post('/requestFileUpload', async(req, res) => {
     const requestFileUpload = schemas.validateRequestFileUpload(req.body);
     const now = new Date();
     const key = `${now.getUTCFullYear()}${now.getUTCMonth()}${now.getUTCDate()}/RANDOMSHIT/${requestFileUpload.filename}`;
-    const presignedPost = s3.serializedPresignedPost(key, MEDIA_BUCKET);
+    const presignedPost = await s3.serializedPresignedPost(key, MEDIA_BUCKET);
     res.json({presignedPost});
 });
 
