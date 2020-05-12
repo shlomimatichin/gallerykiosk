@@ -26,7 +26,7 @@ if 'NO_AWS_PROFILE' not in os.environ:
 os.environ['TOP'] = TOP
 os.environ['STAGE'] = STAGE
 os.environ['PYTHONPATH'] = os.path.join(TOP, 'py')
-os.environ['PATH'] = os.environ['PATH'] + ":" + os.path.join(TOP, "node_modules", ".bin")
+os.environ['PATH'] = os.environ['PATH'] + ":" + os.path.join(TOP, "node_modules", ".bin") + ":" + os.path.join(TOP, "..", "flutter", "bin")
 os.environ['PIPENV_VENV_IN_PROJECT'] = "1"
 os.environ['LC_ALL'] = 'en_US.UTF-8'
 os.environ['LANG'] = 'en_US.UTF-8'

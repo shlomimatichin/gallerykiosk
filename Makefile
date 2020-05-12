@@ -42,3 +42,9 @@ deploy_lambda_restapi:
 	rm -fr /tmp/lambda.zip
 	find build -name "*.js" -or -name "*.js.map" | xargs zip -u -9 /tmp/lambda.zip
 	aws lambda update-function-code --function-name gallerykiosk-$$STAGE-restapi --zip-file fileb:///tmp/lambda.zip --publish
+
+stackoutputs.json: serverless.yml
+	rm -f $@ $@.tmp
+	sls info | grep testapikey | sed 's/^ *//' > $@.tmp
+	sls info -v | grep -A 1000 '^Stack Outputs$$' | tail -n +2 >> $@.tmp
+	yq r -j $@.tmp > $@

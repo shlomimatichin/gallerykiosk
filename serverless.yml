@@ -69,6 +69,7 @@ package:
     - '*'
     - '**/*.sw?'
     - 'serverless-*/*'
+    - 'dart/**'
 
 functions:
   fileuploaded:

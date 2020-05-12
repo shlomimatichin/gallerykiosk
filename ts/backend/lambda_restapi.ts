@@ -1,6 +1,6 @@
 import * as aws_lambda from 'aws-lambda';
 import {app} from './app';
-import serverless_http from 'serverless-http';
+import * as serverless_http from 'serverless-http';
 
 const lambda_adapter = serverless_http(app);
 

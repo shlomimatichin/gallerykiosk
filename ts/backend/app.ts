@@ -6,6 +6,6 @@ export const app = express();
 
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
-app.use('/v1/api', apiRouter);
+app.use('/api/v1', apiRouter);
 app.use(errorhandlers.notFound);
 app.use(errorhandlers.internalServerError);

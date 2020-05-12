@@ -1,4 +1,4 @@
-import Ajv from 'ajv';
+import * as Ajv from 'ajv';
 import * as model from '../model/model';
 
 const ajv = new Ajv({allErrors: true});

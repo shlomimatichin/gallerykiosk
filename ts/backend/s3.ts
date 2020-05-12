@@ -7,7 +7,7 @@ export function presignedGet(key: string, bucket: string, expires: number = 3600
     return s3.getSignedUrl('getObject', {
         Bucket: bucket,
         Key: key,
-        Expires: new Date().getTime() + expires,
+        Expires: expires,
     });
 }
 
