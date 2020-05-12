@@ -1,11 +1,17 @@
 SHELL=/bin/bash
 
-all: build
+all: build backend_node_modules
 
 clean:
 	rm -fr build node_modules
 
-build: ts_build
+build: ts_build generate_schemas
+
+generate_schemas: build/js/model/model.json
+
+build/js/%.json: ts/%.ts
+	@mkdir $(@D) 2>/dev/null || true
+	typescript-json-schema $< "*" -o $@ --required
 
 ts_build:
 	@mkdir build 2>/dev/null || true
@@ -18,6 +24,14 @@ ts_watch:
 node_modules: package.json package-lock.json
 	npm install
 	touch $@
+
+backend_node_modules:
+	rm -fr $@ $@.tmp
+	mkdir -p $@.tmp/nodejs
+	cp package.json package-lock.json $@.tmp/nodejs
+	cd $@.tmp/nodejs; npm install --production
+	touch $@.tmp
+	mv $@.tmp $@
 
 stackoutputs.yml: serverless.yml
 	rm -f $@ $@.tmp

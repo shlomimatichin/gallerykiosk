@@ -1,0 +1,1 @@
+export const MANIFEST_VALID_FOR_SECONDS = 24 * 60 * 60;

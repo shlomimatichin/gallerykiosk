@@ -1,7 +1,9 @@
-import * as framework from './framework';
 import * as aws_lambda from 'aws-lambda';
+import {app} from './app';
+import serverless_http from 'serverless-http';
 
-export async function handler(event:aws_lambda.APIGatewayProxyEvent) {
-    console.log(JSON.stringify(event, null, 2))
-    return framework.jsonResponse({status: "ok"});
+const lambda_adapter = serverless_http(app);
+
+export async function handler(event:aws_lambda.APIGatewayProxyEvent, context: aws_lambda.Context) {
+    return await lambda_adapter(event, context);
 }

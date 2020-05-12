@@ -6,9 +6,9 @@ provider:
   stage: ${env:STAGE}
   region: eu-central-1
   environment:
-    DYNAMODB_LOCK_TABLE: ${self:service}-lock-${env:STAGE}
-    IMAGES_BUCKET: ${self:service}-${env:STAGE}-images
-    META_BUCKET: ${self:service}-${env:STAGE}-meta
+    DYNAMODB_LOCK_TABLE: !Ref LockTable
+    MEDIA_BUCKET: ${self:service}-${env:STAGE}-media
+    META_BUCKET: !Ref MetaBucket
     NODE_ENV: production
   apiKeys:
     - testapikey
@@ -23,20 +23,21 @@ provider:
       - dynamodb:DeleteItem
       - dynamodb:DescribeTable
     Resource:
-      - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_LOCK_TABLE}"
+      - "#{LockTable.Arn}"
   - Effect: Allow
     Action:
       - s3:PutObject
       - s3:GetObject
+      - s3:HeadObject
       - s3:DeleteObject
     Resource:
-      - "#{ImagesBucket.Arn}/*"
+      - "arn:aws:s3:::${self:provider.environment.MEDIA_BUCKET}/*"
       - "#{MetaBucket.Arn}/*"
   - Effect: Allow
     Action:
       - s3:ListBucket
     Resource:
-      - "#{ImagesBucket.Arn}"
+      - "arn:aws:s3:::${self:provider.environment.MEDIA_BUCKET}"
       - "#{MetaBucket.Arn}"
 
 plugins:
@@ -49,17 +50,19 @@ custom:
 
 layers:
   NodeModules:
-    path: .
+    path: backend_node_modules
     package:
       include:
         - 'node_modules/**/*'
       exclude:
         - '**/test'
         - '**/tests'
+        - '**/*.ts'
 
 package:
   include:
     - 'build/js/**/*.js'
+    - 'build/js/**/*.json'
   exclude:
     - 'node_modules/**'
     - 'ts/**'
@@ -68,6 +71,15 @@ package:
     - 'serverless-*/*'
 
 functions:
+  fileuploaded:
+    handler: build/js/backend/lambda_fileuploaded.handler
+    dependsOn:
+      - MediaBucket
+    events:
+      - s3:
+          bucket: "${self:provider.environment.MEDIA_BUCKET}"
+          event: s3:ObjectCreated:*
+          existing: true
   restapi:
     timeout: 30
     memorySize: 256
@@ -86,9 +98,10 @@ functions:
 
 resources:
   Resources:
-    ImagesBucket:
+    MediaBucket:
       Type: AWS::S3::Bucket
       Properties:
+        BucketName: "${self:provider.environment.MEDIA_BUCKET}"
         AccessControl: Private
         CorsConfiguration:
           CorsRules:
@@ -121,11 +134,10 @@ resources:
         KeySchema:
           - AttributeName: ID
             KeyType: HASH
-        TableName: ${self:provider.environment.DYNAMODB_LOCK_TABLE}
         BillingMode: PAY_PER_REQUEST
   Outputs:
-    ImagesBucket:
-      Value: !Ref ImagesBucket
+    MediaBucket:
+      Value: !Ref MediaBucket
     MetaBucket:
       Value: !Ref MetaBucket
     LockTable:
