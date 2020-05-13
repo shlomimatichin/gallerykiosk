@@ -96,5 +96,11 @@ Future test1() async {
   assert(manifest2['mediaFiles'].length == 1);
   String key = manifest2['mediaFiles'][0]['key'];
   assert(key.endsWith('test.png'));
+
+  String imageUrl = manifest2['mediaFiles'][0]['url'];
+  var response = await http.get(imageUrl);
+  if (response.statusCode != 200) {
+    throw Exception('Get ${imageUrl} failed: ${response.statusCode}');
+  }
   print('DONE!');
 }
