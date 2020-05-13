@@ -6,6 +6,7 @@ import * as schemas from './schemas';
 import * as model from '../model/model';
 import * as process from 'process';
 import { MANIFEST_VALID_FOR_SECONDS } from './constants';
+import { v4 as uuidv4 } from 'uuid';
 
 export const MEDIA_BUCKET = process.env.MEDIA_BUCKET!;
 export const apiRouter = express.Router();
@@ -34,7 +35,10 @@ apiRouter.get('/manifestUrl', async(_, res) => {
 apiRouter.post('/requestFileUpload', async(req, res) => {
     const requestFileUpload = schemas.validateRequestFileUpload(req.body);
     const now = new Date();
-    const key = `${now.getUTCFullYear()}${now.getUTCMonth()}${now.getUTCDate()}/RANDOMSHIT/${requestFileUpload.filename}`;
+    const month = `${now.getUTCMonth()}`.padStart(2, '0');
+    const day = `${now.getUTCDate()}`.padStart(2, '0');
+    const uuid = uuidv4();
+    const key = `${now.getUTCFullYear()}${month}${day}/${uuid}/${requestFileUpload.filename}`;
     const presignedPost = await s3.serializedPresignedPost(key, MEDIA_BUCKET);
     res.json({presignedPost});
 });

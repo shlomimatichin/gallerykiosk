@@ -27,6 +27,7 @@
     "dynamodb-lock-client": "^0.6.3",
     "express": "^4.17.1",
     "form-data": "^3.0.0",
-    "serverless-http": "^2.4.1"
+    "serverless-http": "^2.4.1",
+    "uuid": "^8.0.0"
   }
 }

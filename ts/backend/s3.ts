@@ -17,7 +17,7 @@ export function serializedPresignedPost(key: string, bucket: string, expires: nu
             Bucket: bucket,
             Fields: {key: key, acl: 'private'},
             Conditions: [ {acl: 'private'}, {key: key} ],
-            Expires: new Date().getTime() + expires,
+            Expires: expires,
         }, (err, data) => {
             if (err)
                 reject(err);

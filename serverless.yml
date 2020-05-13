@@ -81,6 +81,8 @@ functions:
           bucket: "${self:provider.environment.MEDIA_BUCKET}"
           event: s3:ObjectCreated:*
           existing: true
+    layers:
+      - {Ref: NodeModulesLambdaLayer}
   restapi:
     timeout: 30
     memorySize: 256

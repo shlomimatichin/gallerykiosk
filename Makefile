@@ -25,7 +25,7 @@ node_modules: package.json package-lock.json
 	npm install
 	touch $@
 
-backend_node_modules:
+backend_node_modules: package.json package-lock.json
 	rm -fr $@ $@.tmp
 	mkdir -p $@.tmp/nodejs
 	cp package.json package-lock.json $@.tmp/nodejs
