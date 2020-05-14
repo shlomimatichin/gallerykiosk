@@ -5,8 +5,7 @@
     "moduleResolution": "node",
     "target": "es2018",
     "lib": ["es2018", "dom", "dom.iterable"],
-    "sourceMap": true,
-    "outFile": "www/bundle.js"
+    "sourceMap": true
   },
   "include": ["ts"]
 }
