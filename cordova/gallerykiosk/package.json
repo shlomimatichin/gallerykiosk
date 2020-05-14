@@ -6,19 +6,21 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "node_modules/.bin/webpack-cli -p",
-    "watch": "node_modules/.bin/webpack-cli -d --watch"
+    "watch": "node_modules/.bin/webpack-cli -d --watch",
+    "electron": "cordova run electron --debug --verbose --nobuild"
   },
   "keywords": [
     "ecosystem:cordova"
   ],
   "author": "kugacode",
   "license": "UNLICENSED",
-  "dependencies": {
+  "devDependencies": {
     "@material-ui/core": "^4.9.14",
     "@types/react": "^16.9.35",
     "@types/react-dom": "^16.9.8",
     "cordova": "^9.0.0",
     "cordova-android": "^8.1.0",
+    "cordova-electron": "^1.1.1",
     "cordova-plugin-whitelist": "^1.3.4",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
@@ -34,7 +36,8 @@
       "cordova-plugin-whitelist": {}
     },
     "platforms": [
-      "android"
+      "android",
+      "electron"
     ]
   }
 }
