@@ -12,6 +12,7 @@
     "@types/uuid": "^7.0.3",
     "argparse": "^1.0.10",
     "aws-sdk": "^2.673.0",
+    "cordova": "^9.0.0",
     "deep-copy": "^1.4.2",
     "serverless": "^1.70.0",
     "serverless-cf-vars": "^0.3.2",

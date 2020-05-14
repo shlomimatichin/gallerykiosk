@@ -30,6 +30,16 @@ os.environ['PATH'] = os.environ['PATH'] + ":" + os.path.join(TOP, "node_modules"
 os.environ['PIPENV_VENV_IN_PROJECT'] = "1"
 os.environ['LC_ALL'] = 'en_US.UTF-8'
 os.environ['LANG'] = 'en_US.UTF-8'
+if 'JAVA_HOME' not in os.environ:
+    JAVA_HOME = '/usr/lib/jvm/java-8-openjdk-amd64'
+    if os.path.isdir(JAVA_HOME):
+        os.environ['JAVA_HOME'] = JAVA_HOME
+        os.environ['PATH'] = JAVA_HOME + "/bin:" + os.environ['PATH']
+if 'ANDROID_SDK_ROOT' not in os.environ:
+    ANDROID_SDK_ROOT = os.path.join(os.environ['HOME'], "Android", "Sdk")
+    if os.path.isdir(ANDROID_SDK_ROOT):
+        os.environ['ANDROID_SDK_ROOT'] = ANDROID_SDK_ROOT
+        os.environ['PATH'] += f":{ANDROID_SDK_ROOT}/emulator:{ANDROID_SDK_ROOT}/tools:{ANDROID_SDK_ROOT}/platform-tools"
 
 if len(sys.argv) > 1:
     os.execlp(sys.argv[1], *sys.argv[1:])
