@@ -1,6 +1,7 @@
 attic
 *.sw?
 *.tmp
+.venv
 node_modules
 bundle.js
 bundle.js.map

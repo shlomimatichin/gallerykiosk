@@ -15,16 +15,23 @@ image = Image.open(out)
 print("Scaled:", scale, image.size)
 
 
+fullnames = ['platforms/electron/build-res/installer.png']
 for root, dirs, filenames in os.walk("platforms/android"):
     for filename in filenames:
         if filename not in ['ic_launcher.png', 'ic_launcher_foreground.png']:
             continue
-        fullname = os.path.join(root, filename)
-        with open(fullname, "rb") as reader:
-            to_replace = Image.open(reader)
-        width, height = to_replace.size
-        print(f"Opened {fullname}: {width}X{height}")
-        assert width == height
-        resized = image.resize([width, height], resample=Image.LANCZOS)
-        resized.save(fullname)
+        fullnames.append(os.path.join(root, filename))
 
+for fullname in fullnames:
+    with open(fullname, "rb") as reader:
+        to_replace = Image.open(reader)
+    width, height = to_replace.size
+    print(f"Opened {fullname}: {width}X{height}")
+    assert width == height
+    resized = image.resize([width, height], resample=Image.LANCZOS)
+    if filename == "ic_launcher.png":
+        white = Image.new('RGBA', (width, height), "WHITE")
+        white.paste(resized, (0, 0), resized)
+        white.save(fullname)
+    else:
+        resized.save(fullname)
