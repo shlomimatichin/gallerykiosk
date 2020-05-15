@@ -33,11 +33,6 @@ backend_node_modules: package.json package-lock.json
 	touch $@.tmp
 	mv $@.tmp $@
 
-stackoutputs.yml: serverless.yml
-	rm -f $@ $@.tmp
-	sls info -v | grep -A 1000 '^Stack Outputs$$' | tail -n +2 > $@.tmp
-	mv $@.tmp $@
-
 deploy_lambda_restapi:
 	rm -fr /tmp/lambda.zip
 	find build -name "*.js" -or -name "*.js.map" | xargs zip -u -9 /tmp/lambda.zip
