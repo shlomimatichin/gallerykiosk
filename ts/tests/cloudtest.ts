@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as expect from 'expect';
 import fetch from 'node-fetch';
-import { postFile } from '../apiclient/nodebrowserduality';
+import { postFile, fetchWrapper } from '../apiclient/nodebrowserduality';
 import * as sleep from 'sleep-promise';
 
 async function destroyAllData() {
@@ -20,6 +20,7 @@ async function main() {
     const stackOutputs = JSON.parse(fs.readFileSync(path.join(process.env.TOP!, 'stackoutputs.json')).toString());
     apiclient.settings.apiKey = stackOutputs.testapikey;
     apiclient.settings.serviceEndpoint = stackOutputs.ServiceEndpoint;
+    apiclient.settings.fetchWrapper = fetchWrapper;
 
     await destroyAllData();
     let manifestUrl = await apiclient.manifestUrl();

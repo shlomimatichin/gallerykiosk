@@ -2,17 +2,19 @@ import {cordovaapp} from './cordovaapp';
 
 cordovaapp.initialize();
 
+import * as apiclient from './apiclient/apiclient';
+apiclient.settings.fetchWrapper = fetch;
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
 import materialUITheme from './materialuitheme';
-import {MuiThemeProvider} from '@material-ui/core/styles';
+import {ThemeProvider} from '@material-ui/core/styles';
 import {App} from './App';
 
 ReactDOM.render(
 
-<MuiThemeProvider theme={materialUITheme}>
+<ThemeProvider theme={materialUITheme}>
     <App/>
-</MuiThemeProvider>
+</ThemeProvider>
 
 ,document.getElementById("root"));

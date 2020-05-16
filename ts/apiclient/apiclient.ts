@@ -1,15 +1,15 @@
-import {fetchWrapper} from './nodebrowserduality';
 import * as model from '../model/model';
 import { validateResponseManifestUrl, validateManifest } from '../model/schemas';
 
 export const settings = {
     apiKey: "",
     serviceEndpoint: "",
+    fetchWrapper: {} as any,
 };
 
 async function get(relativePath: string) {
     const url = `${settings.serviceEndpoint}/api/v1/${relativePath}`;
-    const response = await fetchWrapper(url, {headers: {'X-API-Key': settings.apiKey}});
+    const response = await settings.fetchWrapper(url, {headers: {'X-API-Key': settings.apiKey}});
     if (!response.ok) {
         console.error(`API response for ${relativePath} is not 'ok'`, response);
         throw Error(`API call ${relativePath} Failed`);
@@ -19,7 +19,7 @@ async function get(relativePath: string) {
 
 async function post(relativePath: string, payload: any) {
     const url = `${settings.serviceEndpoint}/api/v1/${relativePath}`;
-    const response = await fetchWrapper(url, {
+    const response = await settings.fetchWrapper(url, {
         method: "POST",
         headers: {'Content-Type': 'application/json', 'X-API-Key': settings.apiKey},
         body: JSON.stringify(payload),
@@ -36,7 +36,7 @@ export const manifestUrl = async()=>
 export const requestFileUpload = async(request: model.RequestFileUpload) =>
     await post('requestFileUpload', request);
 export const getManifest = async(url: string) => {
-    const response = await fetchWrapper(url);
+    const response = await settings.fetchWrapper(url);
     if (!response.ok) {
         console.error(`Unable to fetch manifest ${url} is not 'ok'`, response);
         throw Error(`Fetch manifest failed`);
