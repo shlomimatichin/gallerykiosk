@@ -2,6 +2,9 @@ SHELL=/bin/bash
 
 all: build backend_node_modules
 
+test:
+	jest
+
 clean:
 	rm -fr build node_modules
 
@@ -12,6 +15,7 @@ generate_schemas: build/js/model/model.json
 build/js/%.json: ts/%.ts
 	@mkdir $(@D) 2>/dev/null || true
 	typescript-json-schema $< "*" -o $@ --required
+	cp $@ ts/$*.json
 
 ts_build:
 	@mkdir build 2>/dev/null || true

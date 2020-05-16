@@ -1,7 +1,7 @@
 import * as s3 from './s3';
 import * as process from 'process';
 import * as model from '../model/model';
-import * as schemas from './schemas';
+import * as schemas from '../model/schemas';
 import { MANIFEST_VALID_FOR_SECONDS } from './constants';
 
 export const META_BUCKET = process.env.META_BUCKET!;

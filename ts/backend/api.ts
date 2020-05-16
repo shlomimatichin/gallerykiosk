@@ -2,7 +2,7 @@ import * as express from 'express';
 import * as manifeststore from './manifeststore';
 import * as s3 from './s3';
 import * as cloudlock from './cloudlock';
-import * as schemas from './schemas';
+import * as schemas from '../model/schemas';
 import * as model from '../model/model';
 import * as process from 'process';
 import { MANIFEST_VALID_FOR_SECONDS } from './constants';
@@ -27,9 +27,10 @@ apiRouter.get('/manifestUrl', async(_, res) => {
         }
         return key;
     });
-    res.json({
+    const result: model.ResponseManifestUrl = {
         url: s3.presignedGet(key, manifeststore.META_BUCKET, MANIFEST_VALID_FOR_SECONDS),
-    });
+    };
+    res.json(result);
 });
 
 apiRouter.post('/requestFileUpload', async(req, res) => {

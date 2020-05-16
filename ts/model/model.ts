@@ -17,3 +17,7 @@ export interface Manifest {
 export interface RequestFileUpload {
     filename: string;
 }
+
+export interface ResponseManifestUrl {
+    url: string;
+}

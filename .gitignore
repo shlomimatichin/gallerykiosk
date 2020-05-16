@@ -7,3 +7,4 @@ backend_node_modules
 build
 stackoutputs.yml
 stackoutputs.json
+ts/model/*.json

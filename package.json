@@ -5,18 +5,28 @@
   "main": "",
   "author": "",
   "license": "MIT",
+  "scripts": {
+    "build": "make",
+    "build and deploy restapi": "make && sls deploy -v -f restapi",
+    "cloudtest": "ts-node ts/tests/cloudtest.ts"
+  },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.51",
     "@types/express": "^4.17.6",
     "@types/form-data": "^2.5.0",
+    "@types/node-fetch": "^2.5.7",
     "@types/uuid": "^7.0.3",
     "argparse": "^1.0.10",
     "aws-sdk": "^2.673.0",
     "cordova": "^9.0.0",
     "deep-copy": "^1.4.2",
+    "expect": "^26.0.1",
+    "form-data": "^3.0.0",
+    "node-fetch": "^2.6.0",
     "serverless": "^1.70.0",
     "serverless-cf-vars": "^0.3.2",
     "serverless-plugin-log-retention": "^2.0.0",
+    "sleep-promise": "^8.0.1",
     "ts-node": "^8.10.1",
     "typescript": "^3.8.3",
     "typescript-json-schema": "^0.42.0",
@@ -27,7 +37,6 @@
     "aws-lambda": "^1.0.6",
     "dynamodb-lock-client": "^0.6.3",
     "express": "^4.17.1",
-    "form-data": "^3.0.0",
     "serverless-http": "^2.4.1",
     "uuid": "^8.0.0"
   }
