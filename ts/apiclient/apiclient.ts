@@ -1,7 +1,6 @@
 import {fetchWrapper} from './nodebrowserduality';
 import * as model from '../model/model';
 import { validateResponseManifestUrl, validateManifest } from '../model/schemas';
-import fetch from 'node-fetch';
 
 export const settings = {
     apiKey: "",
@@ -37,7 +36,7 @@ export const manifestUrl = async()=>
 export const requestFileUpload = async(request: model.RequestFileUpload) =>
     await post('requestFileUpload', request);
 export const getManifest = async(url: string) => {
-    const response = await fetch(url);
+    const response = await fetchWrapper(url);
     if (!response.ok) {
         console.error(`Unable to fetch manifest ${url} is not 'ok'`, response);
         throw Error(`Fetch manifest failed`);
