@@ -1,6 +1,12 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:gallerykiosk/settings.dart';
+import 'package:flutter_svg/svg.dart';
+
+final Widget logoWidget = SvgPicture.asset(
+  'assets/ic_launcher.svg',
+  semanticsLabel: 'GalleryKiosk Logo'
+);
 
 class ConfigurationPage extends StatefulWidget {
   @override
@@ -48,6 +54,8 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                sizedBoxSpace,
+                logoWidget,
                 sizedBoxSpace,
                 TextFormField(
                   cursorColor: cursorColor,
