@@ -75,7 +75,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
                   cursorColor: cursorColor,
                   decoration: InputDecoration(
                     filled: true,
-                    icon: const Icon(Icons.phone),
+                    icon: const Icon(Icons.cloud),
                     hintText: 'leave empty for default or https://...',
                     labelText: 'Service Endpoint',
                   ),

@@ -19,13 +19,3 @@ Future setApiKey(String value) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   prefs.setString('apiKey', value);
 }
-
-Future<bool> getKioskMode() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  return prefs.getBool('kioskMode') ?? false;
-}
-
-Future setKioskMode(bool value) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.setBool('kioskMode', value);
-}

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gallerykiosk/settings.dart';
 
 import 'configurationpage.dart';
 
@@ -28,36 +27,9 @@ class Router extends StatefulWidget {
 }
 
 class _RouterState extends State<Router> {
-  bool ready = false;
-  bool kioskMode = false;
-
-  void loadPersistent() async {
-    bool gotKioskMode = await getKioskMode();
-    setState(() {
-      kioskMode = gotKioskMode;
-      ready = true;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
-    if (!ready) {
-      loadPersistent();
-      return Scaffold(
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text('loading'),
-            ],
-          ),
-        ),
-      );
-    }
-    if (kioskMode) {
-      assert(false);
-    } else {
-      return ConfigurationPage();
-    }
+    return ConfigurationPage();
   }
 }
