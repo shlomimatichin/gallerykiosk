@@ -57,8 +57,9 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
                     hintText: 'XXXXXXXXXXXX',
                     labelText: 'API Key',
                   ),
-                  onSaved: (value) {
-                    //TODO
+                  initialValue: apiKey,
+                  onChanged: (value) {
+                    setApiKey(value);
                   },
                 ),
                 sizedBoxSpace,
@@ -70,8 +71,9 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
                     hintText: 'leave empty for default or https://...',
                     labelText: 'Service Endpoint',
                   ),
-                  onSaved: (value) {
-                    //TODO
+                  initialValue: serviceEndpoint,
+                  onChanged: (value) {
+                    setServiceEndpoint(value);
                   },
                 ),
               ],

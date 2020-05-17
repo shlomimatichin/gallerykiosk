@@ -2,7 +2,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 Future<String> getServiceEndpoint() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  return prefs.getString('serviceEndpoint') ?? 'https://43fn5f4bw7.execute-api.eu-central-1.amazonaws.com/dev';
+  return prefs.getString('serviceEndpoint');
 }
 
 Future setServiceEndpoint(String value) async {
