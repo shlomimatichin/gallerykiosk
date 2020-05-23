@@ -9,6 +9,8 @@ final Widget logoWidget = SvgPicture.asset(
 );
 
 class ConfigurationPage extends StatefulWidget {
+  final ValueChanged<bool> galleryModeChanged;
+  const ConfigurationPage({Key key, this.galleryModeChanged}) : super(key: key);
   @override
   _ConfigurationPageState createState() => _ConfigurationPageState();
 }
@@ -83,6 +85,17 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
                   onChanged: (value) {
                     setServiceEndpoint(value);
                   },
+                ),
+                sizedBoxSpace,
+                RaisedButton(
+                  onPressed: () { widget.galleryModeChanged(true); },
+                  padding: const EdgeInsets.all(8.0),
+                  textColor: Colors.white,
+                  color: Colors.blue,
+                  child: const Text(
+                    'Gallery',
+                    style: TextStyle(fontSize: 20)
+                  ),
                 ),
               ],
             ),

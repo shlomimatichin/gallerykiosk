@@ -6,7 +6,7 @@ import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:path/path.dart';
 import 'package:flutter_uploader/flutter_uploader.dart';
 
-import 'configurationpage.dart';
+import 'router.dart';
 
 void main() {
   runApp(MyApp());
@@ -22,7 +22,7 @@ final uploader = FlutterUploader();
 void uploadSharedMediaFile(SharedMediaFile sharedMediaFile) async {
   var apiClient = await APIClient.build();
   var presignedPost = await apiClient.presignedPost(basename(sharedMediaFile.path));
-  print("GOT PRESIGNED POST: " + presignedPost.url);
+  print("GOT PRESIGNED POST: " + sharedMediaFile.path);
   await uploader.enqueue(
     url: presignedPost.url,
     files: [FileItem(filename: basename(sharedMediaFile.path),
@@ -33,7 +33,7 @@ void uploadSharedMediaFile(SharedMediaFile sharedMediaFile) async {
     showNotification: true, // send local notification (android only) for upload status
     tag: sharedMediaFile.path
   );
-  print("Upload completed!");
+  print("Upload completed: " + sharedMediaFile.path);
 }
 
 void uploadSharedMediaFiles(List<SharedMediaFile> sharedMediaFiles) {
@@ -83,18 +83,5 @@ class _MyAppState extends State<MyApp> {
   void dispose() {
     _intentDataStreamSubscription.cancel();
     super.dispose();
-  }
-}
-
-class Router extends StatefulWidget {
-  @override
-  _RouterState createState() => _RouterState();
-}
-
-class _RouterState extends State<Router> {
-
-  @override
-  Widget build(BuildContext context) {
-    return ConfigurationPage();
   }
 }

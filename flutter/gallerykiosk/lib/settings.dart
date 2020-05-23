@@ -19,3 +19,13 @@ Future setApiKey(String value) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   prefs.setString('apiKey', value);
 }
+
+Future<bool> getGalleryMode() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getBool('galleryMode') ?? false;
+}
+
+Future setGalleryMode(bool value) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.setBool('galleryMode', value);
+}
