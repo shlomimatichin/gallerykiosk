@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "build": "make",
-    "build and deploy restapi": "make && sls deploy -v -f restapi",
+    "build_and_deploy_restapi": "make && sls deploy -v -f restapi",
     "cloudtest": "ts-node ts/tests/cloudtest.ts"
   },
   "devDependencies": {
