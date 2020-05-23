@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:gallerykiosk/apiclient.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
+import 'package:path/path.dart';
 
 import 'configurationpage.dart';
 
@@ -14,9 +16,20 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
+void uploadSharedMediaFile(SharedMediaFile sharedMediaFile) async {
+  var apiClient = await APIClient.build();
+  var presignedPost = await apiClient.presignedPost(basename(sharedMediaFile.path));
+  print("GOT PRESIGNED POST: " + presignedPost.url);
+}
+
+void uploadSharedMediaFiles(List<SharedMediaFile> sharedMediaFiles) {
+  for (var mediaFile in sharedMediaFiles) {
+    uploadSharedMediaFile(mediaFile);
+  }
+}
+
 class _MyAppState extends State<MyApp> {
   StreamSubscription _intentDataStreamSubscription;
-  List<SharedMediaFile> _sharedFiles;
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -36,20 +49,16 @@ class _MyAppState extends State<MyApp> {
 
     // For sharing images coming from outside the app while the app is in the memory
     _intentDataStreamSubscription =
-        ReceiveSharingIntent.getMediaStream().listen((List<SharedMediaFile> value) {
-      setState(() {
-        print("Shared:" + (_sharedFiles?.map((f)=> f.path)?.join(",") ?? ""));
-        _sharedFiles = value;
+      ReceiveSharingIntent.getMediaStream().listen((List<SharedMediaFile> value) {
+        print("Shared:" + (value.map((f)=> f.path)?.join(",") ?? ""));
+        uploadSharedMediaFiles(value);
+      }, onError: (err) {
+        print("getIntentDataStream error: $err");
       });
-    }, onError: (err) {
-      print("getIntentDataStream error: $err");
-    });
 
-    // For sharing images coming from outside the app while the app is closed
     ReceiveSharingIntent.getInitialMedia().then((List<SharedMediaFile> value) {
-      setState(() {
-        _sharedFiles = value;
-      });
+      print("Shared:" + (value.map((f)=> f.path)?.join(",") ?? ""));
+      uploadSharedMediaFiles(value);
     });
   }
 
