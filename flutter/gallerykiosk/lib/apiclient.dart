@@ -50,8 +50,7 @@ class APIClient {
     return response['url'];
   }
 
-  Future<Map> getManifest() async {
-    var url = await getManifestUrl();
+  Future<Map> getManifest(String url) async {
     var response = await http.get(url);
     if (response.statusCode != 200) {
       throw Exception('Get manifest failed: ${response.statusCode}, $url');
