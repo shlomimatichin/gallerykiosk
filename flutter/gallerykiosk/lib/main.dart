@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gallerykiosk/apiclient.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:path/path.dart';
+import 'package:flutter_uploader/flutter_uploader.dart';
 
 import 'configurationpage.dart';
 
@@ -16,10 +17,23 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
+final uploader = FlutterUploader();
+
 void uploadSharedMediaFile(SharedMediaFile sharedMediaFile) async {
   var apiClient = await APIClient.build();
   var presignedPost = await apiClient.presignedPost(basename(sharedMediaFile.path));
   print("GOT PRESIGNED POST: " + presignedPost.url);
+  await uploader.enqueue(
+    url: presignedPost.url,
+    files: [FileItem(filename: basename(sharedMediaFile.path),
+                     savedDir: dirname(sharedMediaFile.path),
+                     fieldname:"file")],
+    method: UploadMethod.POST,
+    data: Map<String, String>.from(presignedPost.fields),
+    showNotification: true, // send local notification (android only) for upload status
+    tag: sharedMediaFile.path
+  );
+  print("Upload completed!");
 }
 
 void uploadSharedMediaFiles(List<SharedMediaFile> sharedMediaFiles) {
@@ -57,6 +71,9 @@ class _MyAppState extends State<MyApp> {
       });
 
     ReceiveSharingIntent.getInitialMedia().then((List<SharedMediaFile> value) {
+      if (value == null) {
+        return;
+      }
       print("Shared:" + (value.map((f)=> f.path)?.join(",") ?? ""));
       uploadSharedMediaFiles(value);
     });
