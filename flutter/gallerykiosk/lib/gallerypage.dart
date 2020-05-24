@@ -1,7 +1,11 @@
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gallerykiosk/apiclient.dart';
 import 'package:gallerykiosk/manifest.dart';
 import 'package:carousel_pro/carousel_pro.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:http/http.dart' as http;
 
 class GalleryPage extends StatefulWidget {
   final ValueChanged<bool> galleryModeChanged;
@@ -10,10 +14,18 @@ class GalleryPage extends StatefulWidget {
   _GalleryPageState createState() => _GalleryPageState();
 }
 
+class MediaItem {
+  String url;
+  String key;
+  File localFile;
+  MediaItem(this.url, this.key);
+}
+
 class _GalleryPageState extends State<GalleryPage> {
   var _taps = List<DateTime>();
   String _lastManifestURL = "";
   Manifest _manifest;
+  List<MediaItem> _mediaItems;
 
   void _addTap() {
     var now = DateTime.now();
@@ -38,8 +50,36 @@ class _GalleryPageState extends State<GalleryPage> {
     print('Got new manifest with ${manifest.mediaFiles.length} media files');
     setState(() {
       _manifest = manifest;
+      _mediaItems = [];
+      manifest.mediaFiles.forEach((mediaFile) {
+        var mediaItem = MediaItem(mediaFile.url, mediaFile.key);
+        _mediaItems.add(mediaItem);
+        _fetchMediaItem(mediaItem);
+      });
+      //TODO: delete non used files from disk
       _lastManifestURL = manifestUrl;
     });
+  }
+
+  void _fetchMediaItem(MediaItem mediaItem) async {
+    final directory = await getApplicationDocumentsDirectory();
+    final noslash = mediaItem.key.replaceAll("/", "_");
+    final localFile = File('${directory.path}/$noslash');
+    if (await localFile.exists()) {
+      setState((){
+        mediaItem.localFile = localFile;
+      });
+    } else {
+      var response = await http.get(mediaItem.url);
+      print("Downloaded ${mediaItem.key} ${response.statusCode}");
+      if (response.statusCode != 200) {
+        throw Exception('Get image ${mediaItem.key} failed: ${response.statusCode}');
+      }
+      await localFile.writeAsBytes(response.bodyBytes);
+      setState((){
+        mediaItem.localFile = localFile;
+      });
+    }
   }
 
   @override
@@ -47,6 +87,7 @@ class _GalleryPageState extends State<GalleryPage> {
     super.initState();
 
     _fetchManifest();
+    //TODO: poll manifest periodically
   }
 
   @override
@@ -68,12 +109,19 @@ class _GalleryPageState extends State<GalleryPage> {
     }
 
     List<ImageProvider> images = [];
-    _manifest.mediaFiles.forEach((mediaFile) { images.add(ExactAssetImage('assets/loading.gif')); });
+    _mediaItems.forEach((item) {
+      if (item.localFile == null) {
+        images.add(ExactAssetImage('assets/loading.gif'));
+      } else {
+        images.add(FileImage(item.localFile));
+      }
+    });
 
     return GestureDetector(
       onTap: _addTap,
       child: Scaffold(
         body: Carousel(
+          boxFit: BoxFit.contain,
           images: images,
         ),
       ),
