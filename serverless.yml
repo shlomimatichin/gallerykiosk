@@ -65,11 +65,15 @@ package:
     - 'build/js/**/*.json'
   exclude:
     - 'node_modules/**'
+    - 'backend_node_modules/**'
+    - 'testdata/**'
     - 'ts/**'
     - '*'
     - '**/*.sw?'
     - 'serverless-*/*'
     - 'dart/**'
+    - 'flutter/**'
+    - 'cordova/**'
 
 functions:
   fileuploaded:
@@ -94,10 +98,12 @@ functions:
           path: "{proxy+}"
           method: ANY
           private: true
+          cors: true
       - http:
           path: /
           method: ANY
           private: true
+          cors: true
 
 resources:
   Resources:
@@ -111,6 +117,7 @@ resources:
             - AllowedMethods:
                 - POST
                 - HEAD
+                - GET
               AllowedOrigins:
                 - "*"
               AllowedHeaders:
@@ -124,6 +131,7 @@ resources:
             - AllowedMethods:
                 - POST
                 - HEAD
+                - GET
               AllowedOrigins:
                 - "*"
               AllowedHeaders:

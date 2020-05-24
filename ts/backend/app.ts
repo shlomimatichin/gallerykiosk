@@ -1,11 +1,14 @@
 import * as express from 'express';
+import * as cors from 'cors';
 import {apiRouter} from './api';
 import * as errorhandlers from './errorhandlers';
 import * as manifeststore from './manifeststore';
 import * as s3 from './s3';
 
+
 export const app = express();
 
+app.use(cors());
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 app.use('/api/v1', apiRouter);
