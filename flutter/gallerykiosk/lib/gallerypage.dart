@@ -73,6 +73,7 @@ class _GalleryPageState extends State<GalleryPage> {
       var response = await http.get(mediaItem.url);
       print("Downloaded ${mediaItem.key} ${response.statusCode}");
       if (response.statusCode != 200) {
+        // TODO: better error handling
         throw Exception('Get image ${mediaItem.key} failed: ${response.statusCode}');
       }
       await localFile.writeAsBytes(response.bodyBytes);
