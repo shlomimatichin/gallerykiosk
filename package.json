@@ -11,35 +11,38 @@
     "cloudtest": "ts-node ts/tests/cloudtest.ts"
   },
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.51",
-    "@types/cors": "^2.8.6",
-    "@types/express": "^4.17.6",
+    "@types/async-redis": "^1.1.1",
+    "@types/aws-lambda": "^8.10.59",
+    "@types/cookie-parser": "^1.4.2",
+    "@types/cookie-session": "^2.0.41",
+    "@types/cors": "^2.8.7",
+    "@types/express": "^4.17.7",
     "@types/form-data": "^2.5.0",
     "@types/node-fetch": "^2.5.7",
-    "@types/uuid": "^7.0.3",
+    "@types/uuid": "^8.0.1",
     "argparse": "^1.0.10",
-    "aws-sdk": "^2.673.0",
-    "cordova": "^9.0.0",
+    "aws-sdk": "^2.726.0",
+    "cordova": "^10.0.0",
     "deep-copy": "^1.4.2",
-    "expect": "^26.0.1",
+    "expect": "^26.2.0",
     "form-data": "^3.0.0",
     "node-fetch": "^2.6.0",
-    "serverless": "^1.70.0",
+    "serverless": "^1.78.1",
     "serverless-cf-vars": "^0.3.2",
     "serverless-plugin-log-retention": "^2.0.0",
     "sleep-promise": "^8.0.1",
-    "ts-node": "^8.10.1",
-    "typescript": "^3.8.3",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.7",
     "typescript-json-schema": "^0.42.0",
-    "winston": "^3.2.1"
+    "winston": "^3.3.3"
   },
   "dependencies": {
-    "ajv": "^6.12.2",
+    "ajv": "^6.12.3",
     "aws-lambda": "^1.0.6",
     "cors": "^2.8.5",
-    "dynamodb-lock-client": "^0.6.3",
+    "dynamodb-lock-client": "^0.7.2",
     "express": "^4.17.1",
-    "serverless-http": "^2.4.1",
-    "uuid": "^8.0.0"
+    "serverless-http": "^2.5.0",
+    "uuid": "^8.3.0"
   }
 }
