@@ -18,7 +18,7 @@ async function destroyAllData() {
 
 async function main() {
     const stackOutputs = JSON.parse(fs.readFileSync(path.join(process.env.TOP!, 'stackoutputs.json')).toString());
-    apiclient.settings.apiKey = stackOutputs.testapikey;
+    apiclient.settings.apiKey = stackOutputs['testapikey-dev'];
     apiclient.settings.serviceEndpoint = stackOutputs.ServiceEndpoint;
     apiclient.settings.fetchWrapper = fetchWrapper;
 

@@ -11,7 +11,7 @@ provider:
     META_BUCKET: !Ref MetaBucket
     NODE_ENV: production
   apiKeys:
-    - testapikey
+    - testapikey-${env:STAGE}
   iamRoleStatements:
   - Effect: Allow
     Action:
