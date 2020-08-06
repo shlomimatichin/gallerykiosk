@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "993949457214",
+    "firebase_url": "https://gallerykiosk-1900.firebaseio.com",
+    "project_id": "gallerykiosk-1900",
+    "storage_bucket": "gallerykiosk-1900.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:993949457214:android:6f156b5454bb6301ceaa6f",
+        "android_client_info": {
+          "package_name": "com.kugacode.gallerykiosk"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "993949457214-hr545tol21l89oo37p8801smdh1aha3g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCu0SK6Pev_n3gkpOiOxPliIyfVMECydiI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "993949457214-hr545tol21l89oo37p8801smdh1aha3g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

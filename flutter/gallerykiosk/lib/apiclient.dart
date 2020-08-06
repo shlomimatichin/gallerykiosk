@@ -10,6 +10,8 @@ class PresignedPost {
   PresignedPost(this.url, this.fields);
 }
 
+const String DEFAULT_SERVICE_ENDPOINT = "https://43fn5f4bw7.execute-api.eu-central-1.amazonaws.com/dev";
+
 class APIClient {
   String _serviceEndpoint;
   String _apiKey;
@@ -18,7 +20,7 @@ class APIClient {
 
   static Future<APIClient> build() async {
     return new APIClient(
-      (await getServiceEndpoint()) ?? "https://43fn5f4bw7.execute-api.eu-central-1.amazonaws.com/dev",
+      (await getServiceEndpoint()) ?? DEFAULT_SERVICE_ENDPOINT,
       await getApiKey());
   }
 
