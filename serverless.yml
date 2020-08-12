@@ -9,6 +9,8 @@ provider:
     DYNAMODB_LOCK_TABLE: !Ref LockTable
     MEDIA_BUCKET: ${self:service}-${env:STAGE}-media
     META_BUCKET: !Ref MetaBucket
+    UPLOADED_LOGS_BUCKET: !Ref UploadedLogsBucket
+    VERSIONS_BUCKET: !Ref VersionsBucket
     NODE_ENV: production
   apiKeys:
     - testapikey-${env:STAGE}
@@ -33,12 +35,21 @@ provider:
     Resource:
       - "arn:aws:s3:::${self:provider.environment.MEDIA_BUCKET}/*"
       - "#{MetaBucket.Arn}/*"
+      - "#{UploadedLogsBucket.Arn}/*"
+  - Effect: Allow
+    Action:
+      - s3:GetObject
+      - s3:HeadObject
+    Resource:
+      - "#{VersionsBucket.Arn}/*"
   - Effect: Allow
     Action:
       - s3:ListBucket
     Resource:
       - "arn:aws:s3:::${self:provider.environment.MEDIA_BUCKET}"
       - "#{MetaBucket.Arn}"
+      - "#{UploadedLogsBucket.Arn}"
+      - "#{VersionsBucket.Arn}"
 
 plugins:
   - serverless-cf-vars
@@ -136,6 +147,34 @@ resources:
                 - "*"
               AllowedHeaders:
                 - "*"
+    UploadedLogsBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        AccessControl: Private
+        CorsConfiguration:
+          CorsRules:
+            - AllowedMethods:
+                - POST
+                - HEAD
+                - GET
+              AllowedOrigins:
+                - "*"
+              AllowedHeaders:
+                - "*"
+    VersionsBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        AccessControl: Private
+        CorsConfiguration:
+          CorsRules:
+            - AllowedMethods:
+                - POST
+                - HEAD
+                - GET
+              AllowedOrigins:
+                - "*"
+              AllowedHeaders:
+                - "*"
     LockTable:
       Type: 'AWS::DynamoDB::Table'
       Properties:
@@ -151,5 +190,9 @@ resources:
       Value: !Ref MediaBucket
     MetaBucket:
       Value: !Ref MetaBucket
+    UploadedLogsBucket:
+      Value: !Ref UploadedLogsBucket
+    VersionsBucket:
+      Value: !Ref VersionsBucket
     LockTable:
       Value: !Ref LockTable

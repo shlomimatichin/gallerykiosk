@@ -8,16 +8,9 @@ test:
 clean:
 	rm -fr build node_modules
 
-build: ts_build generate_schemas
+build: ts_build
 
-generate_schemas: build/js/model/model.json
-
-build/js/%.json: ts/%.ts
-	@mkdir $(@D) 2>/dev/null || true
-	typescript-json-schema $< "*" -o $@ --required
-	cp $@ ts/$*.json
-
-ts_build:
+ts_build: schemas_generate
 	@mkdir build 2>/dev/null || true
 	tsc --project tsconfig.json
 
@@ -47,3 +40,9 @@ stackoutputs.json: serverless.yml
 	sls info | grep testapikey | sed 's/^ *//' > $@.tmp
 	sls info -v | grep -A 1000 '^Stack Outputs$$' | tail -n +2 >> $@.tmp
 	yq r -j $@.tmp > $@
+
+schemas_generate:
+	node ts/model/schema-generator.js
+
+schemas_watch:
+	node ts/model/schema-generator.js --watch

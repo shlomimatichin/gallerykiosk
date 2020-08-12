@@ -1,5 +1,5 @@
+import { modelValidate } from './../model/modelvalidate';
 import * as model from '../model/model';
-import { validateResponseManifestUrl, validateManifest } from '../model/schemas';
 
 export const settings = {
     apiKey: "",
@@ -31,15 +31,15 @@ async function post(relativePath: string, payload: any) {
     return await response.json();
 }
 
-export const manifestUrl = async()=>
-    validateResponseManifestUrl(await get('manifestUrl')).url;
-export const requestFileUpload = async(request: model.RequestFileUpload) =>
-    await post('requestFileUpload', request);
-export const getManifest = async(url: string) => {
-    const response = await settings.fetchWrapper(url);
-    if (!response.ok) {
-        console.error(`Unable to fetch manifest ${url} is not 'ok'`, response);
-        throw Error(`Fetch manifest failed`);
-    }
-    return validateManifest(await response.json());
+export const apiClient: model.ApiClient = {
+    manifestUrl: async()=>modelValidate.ResponseManifestUrl(await get('manifestUrl')).url,
+    requestFileUpload: async(request: model.RequestFileUpload) => await post('requestFileUpload', request),
+    getManifest: async(url: string) => {
+        const response = await settings.fetchWrapper(url);
+        if (!response.ok) {
+            console.error(`Unable to fetch manifest ${url} is not 'ok'`, response);
+            throw Error(`Fetch manifest failed`);
+        }
+        return modelValidate.Manifest(await response.json());
+    },
 };

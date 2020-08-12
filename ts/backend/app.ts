@@ -4,6 +4,7 @@ import {apiRouter} from './api';
 import * as errorhandlers from './errorhandlers';
 import * as manifeststore from './manifeststore';
 import * as s3 from './s3';
+import { UPLOADED_LOGS_BUCKET, MEDIA_BUCKET } from './config';
 
 
 export const app = express();
@@ -19,9 +20,28 @@ app.post('/fortesting/internal/destroyalldata', async(_, res) => {
         await manifeststore.erase(manifestFiles);
         console.warn(`Destroyed ${manifestFiles.length} manifest files!`);
     }
-    const mediaFiles = await s3.list(manifeststore.MEDIA_BUCKET);
-    if (mediaFiles.length > 0) {
-        await s3.erase(mediaFiles, manifeststore.MEDIA_BUCKET);
+    while (true) {
+        const mediaFiles = await s3.list(MEDIA_BUCKET);
+        if (mediaFiles.length === 0) {
+            break;
+        }
+        await s3.erase(mediaFiles, MEDIA_BUCKET);
+        console.warn(`Destroyed ${mediaFiles.length} media files!`);
+    }
+    while (true) {
+        const mediaFiles = await s3.list(UPLOADED_LOGS_BUCKET);
+        if (mediaFiles.length === 0) {
+            break;
+        }
+        await s3.erase(mediaFiles, UPLOADED_LOGS_BUCKET);
+        console.warn(`Destroyed ${mediaFiles.length} media files!`);
+    }
+    while (true) {
+        const mediaFiles = await s3.list(UPLOADED_LOGS_BUCKET);
+        if (mediaFiles.length === 0) {
+            break;
+        }
+        await s3.erase(mediaFiles, UPLOADED_LOGS_BUCKET);
         console.warn(`Destroyed ${mediaFiles.length} media files!`);
     }
     res.json({status: "ok"});

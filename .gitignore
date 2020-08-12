@@ -8,3 +8,5 @@ build
 *stackoutputs.yml
 *stackoutputs.json
 ts/model/*.json
+ts/model/*validate.ts
+ts/model/*_compiledajv.js

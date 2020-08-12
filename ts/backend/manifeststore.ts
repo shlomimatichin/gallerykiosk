@@ -1,11 +1,9 @@
 import * as s3 from './s3';
-import * as process from 'process';
 import * as model from '../model/model';
-import * as schemas from '../model/schemas';
 import { MANIFEST_VALID_FOR_SECONDS } from './constants';
+import { META_BUCKET, MEDIA_BUCKET } from './config';
+import { modelValidate } from '../model/modelvalidate';
 
-export const META_BUCKET = process.env.META_BUCKET!;
-export const MEDIA_BUCKET = process.env.MEDIA_BUCKET!;
 const MANIFEST_KEY_PREFIX = "manifest_";
 
 export const defaultEmptyManifest = (): model.Manifest => ({
@@ -37,7 +35,7 @@ export const getLatestManifest = async(): Promise<string | null> => {
 export const download = async(key: string): Promise<model.Manifest> => {
     const contents = await s3.get(key, META_BUCKET);
     const raw = JSON.parse(contents.toString());
-    return schemas.validateManifest(raw);
+    return modelValidate.Manifest(raw);
 };
 
 export const upload = async(key: string, manifest: model.Manifest): Promise<void> => {
